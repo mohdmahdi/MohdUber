@@ -6,33 +6,33 @@ import 'welcome_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'home.dart';
 
-class WelcomeScreen extends StatefulWidget {
+class WelcomeScreen3 extends StatefulWidget {
   @override
-  _WelcomeScreenState createState() => _WelcomeScreenState();
+  _WelcomeScreen3State createState() => _WelcomeScreen3State();
 }
 
-class _WelcomeScreenState extends State<WelcomeScreen> {
+class _WelcomeScreen3State extends State<WelcomeScreen3> {
   List<WelcomeModel> welcomes = [
     WelcomeModel(
         image: "assets/images/welcome.png",
         title: " Download ,call , go  ",
         body:
-            ' This is first  long sentences genral can be modified by you at any time with watever words '),
+        ' This is first  long sentences genral can be modified by you at any time with watever words '),
     WelcomeModel(
         image: "assets/images/welcome1.jpg",
-        title: " Welcome 2  Uber ",
+        title: " Welcome 2  Mohd ",
         body:
-            ' This is second  long sentences genral can be modified by you at any time with watever words '),
+        ' This is second  long sentences genral can be modified by you at any time with watever words '),
     WelcomeModel(
         image: "assets/images/welcome2.jpg",
         title: " Welcome 3 To  Uber ",
         body:
-            ' This is third long sentences genral can be modified by you at any time with watever words '),
+        ' This is third long sentences genral can be modified by you at any time with watever words '),
     WelcomeModel(
         image: "assets/images/welcome3.jpg",
         title: " Welcome 4 To  Uber ",
         body:
-            ' This is forth long sentences genral can be modified by you at any time with watever words '),
+        ' This is forth long sentences genral can be modified by you at any time with watever words '),
   ];
 
   PageController _imageController;
@@ -41,6 +41,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   bool amInLastPage = false;
 
   int _currentPosition = 0;
+  int mainPosition = 0;
 
   @override
   void initState() {
@@ -49,7 +50,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
 
     _textController = PageController(initialPage: 0,viewportFraction: 1 );
     _imageController = PageController(initialPage: 0 , viewportFraction: 0.75);
-      //..addListener(_onImageScroll);
+    //..addListener(_onImageScroll);
   }
 
   @override
@@ -65,6 +66,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       body: Stack(
         children: <Widget>[
           _slider(context),
+          _slider2(context),
           Align(
               alignment: Alignment.bottomCenter,
               child: _pageIndicators(context, _currentPosition)),
@@ -78,9 +80,10 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     return Align(
       alignment: Alignment.topCenter,
       child: Padding(
-        padding: EdgeInsets.only(top: 110),
+        padding: EdgeInsets.only(top: 40),
         child: PageView.builder(
             onPageChanged: (position) {
+              mainPosition = position;
               setState(() {
                 _currentPosition = position;
               });
@@ -108,6 +111,46 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                       fit: BoxFit.cover,
                       height: MediaQuery.of(context).size.height * 0.5,
                     ),
+
+                  ],
+                ),
+              );
+            }),
+      ),
+    );
+  }
+  Widget _slider2(BuildContext context) {
+    return Align(
+      alignment: Alignment.bottomCenter,
+      child: Padding(
+        padding: EdgeInsets.only(top: 380),
+        child: PageView.builder(
+            onPageChanged: (position) {
+              mainPosition = position;
+              setState(() {
+                _currentPosition = position;
+              });
+              if (position == welcomes.length - 1) {
+                setState(() {
+                  nextText = "Get Started";
+                  amInLastPage = true;
+                });
+              } else {
+                setState(() {
+                  nextText = " Next";
+                  amInLastPage = false;
+                });
+              }
+            },
+            controller: _textController,
+            itemCount: this.welcomes.length,
+            physics: NeverScrollableScrollPhysics(),
+            itemBuilder: (context, position) {
+              position = mainPosition;
+              return Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  children: <Widget>[
                     SizedBox(
                       height: 48,
                     ),
@@ -126,8 +169,8 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                       welcomes[position].body,
                       textAlign: TextAlign.center,
                       style: Theme.of(context).textTheme.subhead.copyWith(
-                            fontSize: 14,
-                          ),
+                        fontSize: 14,
+                      ),
                     ),
                   ],
                 ),
@@ -139,7 +182,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
 
 
   Widget _pageIndicators(BuildContext context, int position) {
-    double offset = MediaQuery.of(context).size.height * 0.30;
+    double offset = MediaQuery.of(context).size.height * 0.35;
     return Transform.translate(
       offset: Offset(0, -offset),
       child: Row(
@@ -193,7 +236,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               onPressed: () async {
                 //TODO:  skip
                 SharedPreferences sharedPreferences =
-                    await SharedPreferences.getInstance();
+                await SharedPreferences.getInstance();
                 sharedPreferences.setBool('seen', true);
                 goToHomePage(context);
               },

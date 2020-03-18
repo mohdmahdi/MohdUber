@@ -12,4 +12,12 @@ ThemeData mainTheme = ThemeData(
         letterSpacing: 1.2 ,height: 1.5),
     subhead: TextStyle(color: Color(0xFF636363), letterSpacing: 1.2 , height: 1.5),
   ),
+  buttonTheme: ButtonThemeData(
+    shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(25))
+    ),
+    buttonColor: Color(0xffEFBC06),
+    textTheme: ButtonTextTheme.primary
+
+  ),
 );
