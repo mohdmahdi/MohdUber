@@ -1,10 +1,10 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:uberapp/auth/client_register_screen.dart';
 import 'welcome_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'home.dart';
+import 'package:uberapp/util/size_config.dart';
 
 class WelcomeScreen3 extends StatefulWidget {
   @override
@@ -35,6 +35,8 @@ class _WelcomeScreen3State extends State<WelcomeScreen3> {
         ' This is forth long sentences genral can be modified by you at any time with watever words '),
   ];
 
+  ScreenConfig screenConfig;
+  WidgetSize widgetSize;
   PageController _imageController;
   PageController _textController;
   String nextText = 'Next';
@@ -49,7 +51,7 @@ class _WelcomeScreen3State extends State<WelcomeScreen3> {
 
 
     _textController = PageController(initialPage: 0,viewportFraction: 1 );
-    _imageController = PageController(initialPage: 0 , viewportFraction: 0.75);
+    _imageController = PageController(initialPage: 0 , viewportFraction: 0.7);
     //..addListener(_onImageScroll);
   }
 
@@ -61,6 +63,9 @@ class _WelcomeScreen3State extends State<WelcomeScreen3> {
 
   @override
   Widget build(BuildContext context) {
+    //print(screenConfig.screenType);
+    screenConfig = ScreenConfig(context);
+    widgetSize = WidgetSize(screenConfig);
     double radius = MediaQuery.of(context).size.width * 0.09;
     return Scaffold(
       body: Stack(
@@ -80,7 +85,7 @@ class _WelcomeScreen3State extends State<WelcomeScreen3> {
     return Align(
       alignment: Alignment.topCenter,
       child: Padding(
-        padding: EdgeInsets.only(top: 40),
+        padding: EdgeInsets.only(top: 45),
         child: PageView.builder(
             onPageChanged: (position) {
               mainPosition = position;
@@ -103,13 +108,13 @@ class _WelcomeScreen3State extends State<WelcomeScreen3> {
             itemCount: this.welcomes.length,
             itemBuilder: (context, position) {
               return Padding(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.only(top:32 , left:10 , right: 10),
                 child: Column(
                   children: <Widget>[
                     Image.asset(
                       welcomes[position].image,
                       fit: BoxFit.cover,
-                      height: MediaQuery.of(context).size.height * 0.5,
+                      height: MediaQuery.of(context).size.height * widgetSize.imageHeight,
                     ),
 
                   ],
@@ -123,7 +128,7 @@ class _WelcomeScreen3State extends State<WelcomeScreen3> {
     return Align(
       alignment: Alignment.bottomCenter,
       child: Padding(
-        padding: EdgeInsets.only(top: 380),
+        padding: EdgeInsets.only(top: widgetSize.welcomePadding),
         child: PageView.builder(
             onPageChanged: (position) {
               mainPosition = position;
@@ -152,7 +157,7 @@ class _WelcomeScreen3State extends State<WelcomeScreen3> {
                 child: Column(
                   children: <Widget>[
                     SizedBox(
-                      height: 48,
+                      height: 8,
                     ),
                     Text(
                       welcomes[position].title,
@@ -160,16 +165,16 @@ class _WelcomeScreen3State extends State<WelcomeScreen3> {
                       style: Theme.of(context)
                           .textTheme
                           .title
-                          .copyWith(fontSize: 16),
+                          .copyWith(fontSize: widgetSize.titleFontSize),
                     ),
                     SizedBox(
-                      height: 16,
+                      height: 8,
                     ),
                     Text(
                       welcomes[position].body,
                       textAlign: TextAlign.center,
                       style: Theme.of(context).textTheme.subhead.copyWith(
-                        fontSize: 14,
+                        fontSize: widgetSize.descriptionFontSize,
                       ),
                     ),
                   ],
@@ -182,7 +187,7 @@ class _WelcomeScreen3State extends State<WelcomeScreen3> {
 
 
   Widget _pageIndicators(BuildContext context, int position) {
-    double offset = MediaQuery.of(context).size.height * 0.35;
+    double offset = MediaQuery.of(context).size.height * widgetSize.indicatorOffset;
     return Transform.translate(
       offset: Offset(0, -offset),
       child: Row(
