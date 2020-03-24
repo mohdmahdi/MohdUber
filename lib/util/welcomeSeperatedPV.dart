@@ -24,7 +24,7 @@ class _WelcomeScreen3State extends State<WelcomeScreen3> {
         body:
         ' This is second  long sentences genral can be modified by you at any time with watever words '),
     WelcomeModel(
-        image: "assets/images/welcome2.jpg",
+        image: "assets/images/welcome.png",
         title: " Welcome 3 To  Uber ",
         body:
         ' This is third long sentences genral can be modified by you at any time with watever words '),
@@ -86,41 +86,53 @@ class _WelcomeScreen3State extends State<WelcomeScreen3> {
       alignment: Alignment.topCenter,
       child: Padding(
         padding: EdgeInsets.only(top: 45),
-        child: PageView.builder(
-            onPageChanged: (position) {
-              mainPosition = position;
-              setState(() {
-                _currentPosition = position;
-              });
-              if (position == welcomes.length - 1) {
-                setState(() {
-                  nextText = "Get Started";
-                  amInLastPage = true;
-                });
-              } else {
-                setState(() {
-                  nextText = " Next";
-                  amInLastPage = false;
-                });
-              }
-            },
-            controller: _imageController,
-            itemCount: this.welcomes.length,
-            itemBuilder: (context, position) {
-              return Padding(
-                padding: const EdgeInsets.only(top:32 , left:10 , right: 10),
-                child: Column(
-                  children: <Widget>[
-                    Image.asset(
-                      welcomes[position].image,
-                      fit: BoxFit.cover,
-                      height: MediaQuery.of(context).size.height * widgetSize.imageHeight,
-                    ),
+        child: AnimatedBuilder(
+          animation: _imageController,
+          builder: (context , builder) {
+            return PageView.builder(
+                onPageChanged: (position) {
+                  mainPosition = position;
+                  setState(() {
+                    _currentPosition = position;
+                  });
+                  if (position == welcomes.length - 1) {
+                    setState(() {
+                      nextText = "Get Started";
+                      amInLastPage = true;
+                    });
+                  } else {
+                    setState(() {
+                      nextText = " Next";
+                      amInLastPage = false;
+                    });
+                  }
+                },
+                controller: _imageController,
+                itemCount: this.welcomes.length,
+                itemBuilder: (context, position) {
+                  //print(_imageController.page);
+                  double transitionFactor = 1;
+                  if(_imageController.page != null && _imageController.position.haveDimensions){
+                    transitionFactor = _imageController.page - position;
+                    transitionFactor = (1-(transitionFactor.abs()*0.5)).clamp(0.0, 1.0);
+                  }
+                  print(transitionFactor);
+                  return Padding(
+                    padding: const EdgeInsets.only(top:32 ),
+                    child: Column(
+                      children: <Widget>[
+                        Image.asset(
+                          welcomes[position].image,
+                          fit: BoxFit.fitWidth,
+                          height: MediaQuery.of(context).size.height * widgetSize.imageHeight * transitionFactor ,
+                        ),
 
-                  ],
-                ),
-              );
-            }),
+                      ],
+                    ),
+                  );
+                });
+          },
+        ),
       ),
     );
   }
