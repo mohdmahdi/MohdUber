@@ -13,8 +13,8 @@ class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   String email;
   String password;
-
-
+  bool _enabled;
+  bool _autoValidation = false;
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
 
@@ -42,6 +42,7 @@ class _LoginScreenState extends State<LoginScreen> {
       body: Container(
         padding: EdgeInsets.only(left: 18, right: 18, bottom: 32),
         child: Form(
+          autovalidate: _autoValidation,
             key: _formKey,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -50,10 +51,25 @@ class _LoginScreenState extends State<LoginScreen> {
                   height: 65,
                 ),
                 TextFormField(
+
+                  enabled: _enabled,
                   decoration: InputDecoration(hintText: 'Email'),
+                  validator: (value){
+                    if(value.isEmpty){
+                      return ' Email is required';
+                    }
+                    return null;
+                  },
                 ),
                 TextFormField(
+                  enabled: _enabled,
                   decoration: InputDecoration(hintText: 'Password'),
+                  validator: (value){
+                    if(value.isEmpty){
+                      return ' password is required';
+                    }
+                    return null;
+                  },
                 ),
                 Row(
                   children: <Widget>[
@@ -127,17 +143,31 @@ class _LoginScreenState extends State<LoginScreen> {
       width: double.infinity,
       height: 50,
       child: FlatButton(
-        child: Text('Sign In',
+        onPressed: _signIn,
+        child:  Text('Sign In',
             style: TextStyle(
                 color: Colors.white,
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
-                letterSpacing: 2)),
-        onPressed: () {},
+                letterSpacing: 2),),
+
+
         color: Theme.of(context).primaryColor,
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(25))),
       ),
     );
+  }
+
+  void _signIn(){
+    if(!_formKey.currentState.validate()){
+      setState(() {
+        _autoValidation = true;
+      });
+    }else{
+      setState(() {
+        _enabled = false;
+      });
+    }
   }
 }

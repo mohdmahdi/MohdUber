@@ -1,5 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:uberapp/auth/client_register_screen.dart';
+import 'package:uberapp/util/shared_widgets.dart';
+
 
 import 'login_screen.dart';
 
@@ -17,6 +20,7 @@ class _DriverRegisterScreenState extends State<DriverRegisterScreen> {
   String _carModel;
   String _carYear;
 
+  bool _enabled = true;
 
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
@@ -27,7 +31,7 @@ class _DriverRegisterScreenState extends State<DriverRegisterScreen> {
 
   PageController _pageController = PageController();
 
-  bool _formAutoValidation = false ;
+  bool _formAutoValidation = false;
 
   @override
   void dispose() {
@@ -45,16 +49,17 @@ class _DriverRegisterScreenState extends State<DriverRegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: appBar(context, 'Sign Up as driver'),
       body: Padding(
         padding: const EdgeInsets.all(24),
         child: Form(
-          autovalidate: _formAutoValidation ,
+          autovalidate: _formAutoValidation,
           key: _formKey,
-          child:Column(
+          child: Column(
             children: <Widget>[
               Flexible(
                 child: PageView(
-                  controller:_pageController ,
+                  controller: _pageController,
                   children: <Widget>[
                     _userNamePage(context),
                     _carDetails(context),
@@ -62,9 +67,7 @@ class _DriverRegisterScreenState extends State<DriverRegisterScreen> {
                 ),
               ),
               Row(
-                children: <Widget>[
-
-                ],
+                children: <Widget>[],
               )
             ],
           ),
@@ -73,7 +76,23 @@ class _DriverRegisterScreenState extends State<DriverRegisterScreen> {
     );
   }
 
-  Widget _userNamePage(BuildContext context){
+  Widget _or(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[
+        Flexible(child: divider(context),),
+        Padding(
+          padding: const EdgeInsets.only(left: 15, right: 15),
+          child: Text(
+            'OR',
+            style: TextStyle(color: Colors.grey),
+          ),
+        ),
+        Flexible(child: divider(context),),
+      ],
+    );
+  }
+  Widget _userNamePage(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: <Widget>[
@@ -83,9 +102,9 @@ class _DriverRegisterScreenState extends State<DriverRegisterScreen> {
         TextFormField(
           controller: _emailController,
           decoration: InputDecoration(hintText: 'Email'),
-          validator: (value){
-            if(value.isEmpty){
-             return 'Email is Required';
+          validator: (value) {
+            if (value.isEmpty) {
+              return 'Email is Required';
             }
             return null;
           },
@@ -94,23 +113,22 @@ class _DriverRegisterScreenState extends State<DriverRegisterScreen> {
           obscureText: true,
           controller: _passwordController,
           decoration: InputDecoration(hintText: 'Password'),
-          validator: (value){
-            if(value.isEmpty){
+          validator: (value) {
+            if (value.isEmpty) {
               return 'password is Required';
             }
             return null;
           },
         ),
         TextFormField(
-
           obscureText: true,
           controller: _confirmPasswordController,
           decoration: InputDecoration(hintText: 'Confirm Password '),
-          validator: (value){
-            if(value.isEmpty){
+          validator: (value) {
+            if (value.isEmpty) {
               return 'Confirm password is Required';
             }
-            if(_passwordController.text != value){
+            if (_passwordController.text != value) {
               return 'Your Password do not Match';
             }
             return null;
@@ -128,16 +146,15 @@ class _DriverRegisterScreenState extends State<DriverRegisterScreen> {
                   letterSpacing: 2,
                 )),
             onPressed: () {
-              if(!_formKey.currentState.validate()){
+              if (!_formKey.currentState.validate()) {
                 setState(() {
                   _formAutoValidation = true;
                 });
-              }else {
+              } else {
                 //save date
                 _setAccountDetails();
                 //move to next page
                 _nextPage();
-
               }
             },
             color: Theme.of(context).primaryColor,
@@ -161,12 +178,37 @@ class _DriverRegisterScreenState extends State<DriverRegisterScreen> {
             ),
           ],
         ),
+        _or(context),
+        _clientSignUpButton(context),
       ],
     );
-
   }
 
-  Widget _carDetails(BuildContext context){
+  Widget _clientSignUpButton(BuildContext context) {
+    return Container(
+      height: 50,
+      width: double.infinity,
+      child: FlatButton(
+
+        child: _enabled? Text('Create Client Account',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 2,
+            )) : CircularProgressIndicator(backgroundColor: Colors.white,),
+        onPressed: () {
+          //check state
+          Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => ClientRegisterScreen(),),);
+        },
+        color: Theme.of(context).primaryColor,
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(25))),
+      ),
+    );
+  }
+
+  Widget _carDetails(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: <Widget>[
@@ -174,30 +216,33 @@ class _DriverRegisterScreenState extends State<DriverRegisterScreen> {
           height: 75,
         ),
         TextFormField(
+          enabled: _enabled,
           controller: _manufacturerController,
           decoration: InputDecoration(hintText: 'Car Manufacturer'),
-          validator: (value){
-            if(value.isEmpty){
+          validator: (value) {
+            if (value.isEmpty) {
               return ' Cam Manufacturer is required';
             }
             return null;
-        },
+          },
         ),
         TextFormField(
+          enabled: _enabled,
           controller: _carModelController,
           decoration: InputDecoration(hintText: 'Car Model'),
-          validator: (value){
-            if(value.isEmpty){
+          validator: (value) {
+            if (value.isEmpty) {
               return ' Cam Model is required';
             }
             return null;
           },
         ),
         TextFormField(
+          enabled: _enabled,
           controller: _carYearController,
           decoration: InputDecoration(hintText: 'Car Year '),
-          validator: (value){
-            if(value.isEmpty){
+          validator: (value) {
+            if (value.isEmpty) {
               return ' Cam Year is required';
             }
             return null;
@@ -225,31 +270,42 @@ class _DriverRegisterScreenState extends State<DriverRegisterScreen> {
             ),
             Flexible(
               child: FlatButton(
-                child: Text('SUBMIT',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 2,
-                    )),
+                child: _enabled
+                    ? Text('SUBMIT',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 2,
+                        ))
+                    : SizedBox(
+                        width: 15,
+                        height: 15,
+                        child: CircularProgressIndicator()),
                 onPressed: () {
-                  if(!_formKey.currentState.validate()){
+                  if (!_formKey.currentState.validate()) {
                     setState(() {
                       _formAutoValidation = true;
                     });
-                  }else{
-                   _setCarDetails();
-                   //TODO : MAKE THE CALL
+                  } else {
+                    if (_enabled) {
+                      setState(() {
+                        _enabled = false;
+                      });
+                    }
+
+                    _setCarDetails();
+                    //TODO : MAKE THE CALL
                     _createDriverAccount();
                   }
-
                 },
                 color: Theme.of(context).primaryColor,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(25))),
               ),
             ),
-        ],),
+          ],
+        ),
         Row(
           children: <Widget>[
             Text('Already Member? '),
@@ -268,36 +324,34 @@ class _DriverRegisterScreenState extends State<DriverRegisterScreen> {
         ),
       ],
     );
-
   }
 
-  void _nextPage(){
-    _pageController.nextPage(duration: Duration(milliseconds: 300), curve: Curves.easeInOut);
+  void _nextPage() {
+    _pageController.nextPage(
+        duration: Duration(milliseconds: 300), curve: Curves.easeInOut);
   }
 
-  void _prevPage(){
-    _pageController.previousPage(duration: Duration(milliseconds: 300), curve: Curves.easeInOut);
+  void _prevPage() {
+    _pageController.previousPage(
+        duration: Duration(milliseconds: 300), curve: Curves.easeInOut);
   }
 
-  void _setAccountDetails(){
+  void _setAccountDetails() {
     setState(() {
       _email = _emailController.text;
       _password = _passwordController.text;
     });
   }
 
-  void _setCarDetails(){
+  void _setCarDetails() {
     setState(() {
       _manufacturer = _manufacturerController.text;
       _carModel = _carModelController.text;
       _carYear = _carYearController.text;
     });
-
   }
 
-  void _createDriverAccount(){
-  //TODO: Call firebase to create driver account
+  void _createDriverAccount() {
+    //TODO: Call firebase to create driver account
   }
-
-
 }
