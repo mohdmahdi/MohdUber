@@ -95,29 +95,6 @@ class _ClientRegisterScreenState extends State<ClientRegisterScreen> {
     });
   }
 
-  void _createUserAccount () async{
-    _enableSubmitting();
-    _setAccountDetails();
-    //TODO: call FireBase and create user account
-   AuthResult _authResult = await _firebaseAuth.createUserWithEmailAndPassword(email: _email, password: _password);
-   FirebaseUser _user = _authResult.user;
-   if(_user != null) {
-     SharedPreferences _sharedPref = await SharedPreferences.getInstance();
-     _sharedPref.setString('user_id', _user.uid);
-
-     _firebaseAuth.signInWithEmailAndPassword(email: _email, password: _password).then((value){
-       _firestore.collection('profiles').document().setData({
-         'user_id': '_user.uid',
-         'type': 'customer'
-       }).then((value) {
-         Navigator.of(context).pushReplacement(
-             MaterialPageRoute(builder: (context) => HomeScreen()));
-       });
-     });
-
-   }
-  }
-
   Widget _or(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -372,6 +349,8 @@ class _ClientRegisterScreenState extends State<ClientRegisterScreen> {
     setState(() {
       _email = _emailController.text;
       _password = _passwordController.text;
+      _firstName = _firstNameController.text;
+      _lastName = _lastNameController.text;
     });
   }
 
@@ -380,6 +359,31 @@ class _ClientRegisterScreenState extends State<ClientRegisterScreen> {
       _firstName = _firstNameController.text;
       _lastName = _lastNameController.text;
     });
+  }
+
+  void _createUserAccount () async{
+    _enableSubmitting();
+    _setAccountDetails();
+    //TODO: call FireBase and create user account
+    AuthResult _authResult = await _firebaseAuth.createUserWithEmailAndPassword(email: _email, password: _password);
+    FirebaseUser _user = _authResult.user;
+    if(_user != null) {
+      SharedPreferences _sharedPref = await SharedPreferences.getInstance();
+      _sharedPref.setString('user_id', _user.uid);
+
+      _firebaseAuth.signInWithEmailAndPassword(email: _email, password: _password).then((value){
+        _firestore.collection('profiles').document().setData({
+          'user_id': _user.uid,
+          'type': 'customer',
+          'fist_name' : _firstName,
+          'last_name' :_lastName,
+        }).then((value) {
+          Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (context) => HomeScreen()));
+        });
+      });
+
+    }
   }
 
 

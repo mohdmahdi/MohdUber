@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uberapp/auth/login_screen.dart';
 import 'package:uberapp/util/welcomeSeperatedPV.dart';
 import 'auth/client_register_screen.dart';
 import 'util/welcome.dart';
@@ -14,11 +16,13 @@ void main() async{
   if(seen == null || !seen){
     homeScreen = WelcomeScreen3();
   }else{
-    String userID = sharedPreferences.getString('user_id');
-    if(userID == null || userID == ''){
-      homeScreen = ClientRegisterScreen();
+    FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+    FirebaseUser user = await firebaseAuth.currentUser();
+    if(user==null) {
+      homeScreen = LoginScreen();
     }
   }
+
   runApp(Wadini(homeScreen));
 }
 class Wadini extends StatelessWidget {
