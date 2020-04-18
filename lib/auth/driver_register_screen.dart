@@ -1,6 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uberapp/auth/client_register_screen.dart';
+import 'package:uberapp/util/home.dart';
 import 'package:uberapp/util/shared_widgets.dart';
 
 
@@ -351,7 +355,26 @@ class _DriverRegisterScreenState extends State<DriverRegisterScreen> {
     });
   }
 
-  void _createDriverAccount() {
-    //TODO: Call firebase to create driver account
+  void _createDriverAccount() async {
+      AuthResult _authResult = await FirebaseAuth.instance.createUserWithEmailAndPassword(email: _email, password: _password);
+      FirebaseUser _user = _authResult.user;
+    if(_user != null) {
+      SharedPreferences _sharedPref = await SharedPreferences.getInstance();
+      _sharedPref.setString('user_id', _user.uid);
+
+      FirebaseAuth.instance.signInWithEmailAndPassword(email: _email, password: _password).then((value){
+        Firestore.instance.collection('profiles').document().setData({
+          'user_id': _user.uid,
+          'type': 'driver',
+          'car_year' : _carYear,
+          'car_manufacturer' :_manufacturer,
+          'car_model' : _carModel,
+        }).then((value) {
+          Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (context) => HomeScreen()));
+        });
+      });
+
+    }
   }
 }

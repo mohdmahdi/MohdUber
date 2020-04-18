@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:uberapp/auth/login_screen.dart';
+import 'package:uberapp/users/profile.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -33,8 +35,8 @@ class _HomeScreenState extends State<HomeScreen> {
             ListTile(
               onTap: ()async{
                 Navigator.of(context).pop();
-//                Navigator.of(context).pushReplacement(
-//                    MaterialPageRoute(builder: (context) => ProfileScreen()));
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => Profile()));
              },
               trailing: Icon(Icons.person),
               title: Text('PROFILE'),
@@ -44,7 +46,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 Navigator.of(context).pop();
                 await FirebaseAuth.instance.signOut();
                 Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(builder: (context) => LoginScreen()));
+                    MaterialPageRoute(builder: (context) =>HomeScreen()));
               },
               trailing: Icon(Icons.exit_to_app),
               title: Text('LOGOUT'),

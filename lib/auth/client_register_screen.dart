@@ -375,7 +375,7 @@ class _ClientRegisterScreenState extends State<ClientRegisterScreen> {
         _firestore.collection('profiles').document().setData({
           'user_id': _user.uid,
           'type': 'customer',
-          'fist_name' : _firstName,
+          'first_name' : _firstName,
           'last_name' :_lastName,
         }).then((value) {
           Navigator.of(context).pushReplacement(
