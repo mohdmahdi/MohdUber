@@ -46,7 +46,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 Navigator.of(context).pop();
                 await FirebaseAuth.instance.signOut();
                 Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(builder: (context) =>HomeScreen()));
+                    MaterialPageRoute(builder: (context) =>LoginScreen()));
               },
               trailing: Icon(Icons.exit_to_app),
               title: Text('LOGOUT'),
